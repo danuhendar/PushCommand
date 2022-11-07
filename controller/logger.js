@@ -121,12 +121,35 @@ const ProdmastLogger = createLogger({
    ]
  });
 
+ const BootTimeLogger = createLogger({
+    levels: config.syslog.levels,
+    defaultMeta: {component: 'bootime.log'},
+    format: combine(
+        timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        json()
+      ),
+   
+    transports: [
+        new transports.Console(),
+        new transports.File({ filename: 'bootime.log' })
+    ],
+    exceptionHandlers: [
+        new transports.Console(),
+        new transports.File({ filename: 'err.log'})
+    ]
+});
+
+ 
+
 module.exports = {
  userLogger: userLogger,
  RKEYVatLogger: RKEYVatLogger,
  LockRegistryLogger:LockRegistryLogger,
  ProdmastLogger:ProdmastLogger,
  programInstalledLogger: programInstalledLogger,
- memoryInfoLogger: memoryInfoLogger
+ memoryInfoLogger: memoryInfoLogger,
+ BootTimeLogger: BootTimeLogger
 
 };
