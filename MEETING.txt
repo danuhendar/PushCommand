@@ -1,0 +1,27 @@
+
+CRM
+1. Menu Laporan Per Tahun -> Menu Lead Customer -> OK
+2. Menu Laporan Per Tahun di create -> OK
+3. Menu Master DC -> OK
+4. Hak akses per user seperti HRIS -> OK hanya untuk user administrator
+
+
+OKR
+1. objective menjadi 5 KR maksimal
+2. Indikasitor Prosentase per KR
+3. KR perusahaan menjadi Objective ke Departemen
+4. KR Departemen menjadi Objective ke Personil
+5. Prosentase KR Departemen akan terhubung secara langsung oleh Summary Objective personil
+6. Layer PERUSAHAAN->DEPARTEMEN->PERSONIL->INISIATIF
+7. Apabila ada perubahan objective harus ada persetujuan owner
+8. Inisiatif tidak mempengaruhi Objective dan keyresult personil
+9. OKR jangka waktunya per tahun
+10. 	DIREKTUR -> Create OKR PERUSAHAAN
+		 -> Create / Menentukan KR untuk siapa
+	DEPARTEMEN
+		 -> CREATE  KR dari objective masing-masing departemen
+	USER/PERSONIL
+		-> CREATE Objective user itu sendiri mengacu pada KR Objective Departemen
+		-> Create Inisiatif
+11. Setiap kegiatan di OKR harus ter-log
+12. INISIATIF TIDAK ADA BATASAN
