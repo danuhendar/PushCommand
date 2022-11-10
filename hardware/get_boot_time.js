@@ -32,23 +32,38 @@ const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
-
 // ------------------------ SCHEDULE CRON JOB --------------------//
 console.log("Berjalan pada jam : "+SCHEDULE_CRON_JAM+" Menit : "+SCHEDULE_CRON_MENIT);
 cron.schedule('0 '+SCHEDULE_CRON_MENIT+' '+SCHEDULE_CRON_JAM+' * * *', async function() {
         const arr_cabang = kode_cabang_initial.split(',');
-        console.log("Jumlah Cabang : "+arr_cabang.length);
+        //console.log("Jumlah Cabang : "+arr_cabang.length);
         for(var i = 0;i<arr_cabang.length;i++){
             BootTimeLogger.info("Proses Cabang-"+arr_cabang[i]);
             const ip = arr_cabang[i];
-            const topic_bc = "BOOT_TIME/"+ip+'/'
-            const kdtk = 'ALL TOKO '+topic_bc;
-            BootTimeLogger.info("Proses Broadcast : "+topic_bc);
-            const body_command = "Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Diagnostics-Performance/Operational'; Id=100} -MaxEvents 1 |ForEach-Object {$eventXml = ([xml]$_.ToXml()).Event; [PSCustomObject]@{'BootTime' = [math]::Round([int64]($eventXml.EventData.Data | Where-Object {$_.Name -eq 'BootTime'}).InnerXml / 1000 / 60,2); 'BootFinished' = [datetime]($eventXml.EventData.Data | Where-Object {$_.Name -eq 'BootEndTime'}).InnerXml }} | Format-Table -HideTableHeaders";
-            const command_kirim = body_command;
-            console.log("COMMAND KIRIM : "+command_kirim);
-            pub_bc_acuan("BC_POWERSHELL_COMMAND",topic_bc,command_kirim,kdtk,ip);
+
+            var res_station = "";
+            const sql_get_station = "SELECT GROUP_CONCAT(DISTINCT(STATION)) AS STATION FROM `tokomain` WHERE KDCAB = '"+ip+"' AND STATION NOT IN('STB') AND NAMA NOT LIKE '%SIMULASI%' AND NAMA NOT LIKE '%BAZAR%' AND NAMA NOT LIKE '%EVENT%' ";
+            //console.log(sql_get_station);
+            mysqlLib.executeQuery(sql_get_station).then((d) => {
+                res_station = d[0].STATION;
+            });
+    
             await sleep(5000);
+            //console.log("res-station : "+res_station);
+            var sp_station = res_station.split(',');
+            for(var k = 0;k<sp_station.length;k++){
+                const hasil_station = sp_station[k];
+                const topic_bc = "BOOT_TIME/"+ip+"/"+hasil_station+"/";
+                const kdtk = 'ALL TOKO '+topic_bc;
+                BootTimeLogger.info("Proses Broadcast : "+topic_bc);
+                const body_command = "Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Diagnostics-Performance/Operational'; Id=100} -MaxEvents 1 |ForEach-Object {$eventXml = ([xml]$_.ToXml()).Event; [PSCustomObject]@{'BootTime' = [math]::Round([int64]($eventXml.EventData.Data | Where-Object {$_.Name -eq 'BootTime'}).InnerXml / 1000 / 60,2); 'BootFinished' = [datetime]($eventXml.EventData.Data | Where-Object {$_.Name -eq 'BootEndTime'}).InnerXml }} | Format-Table -HideTableHeaders";
+                const command_kirim = body_command;
+                //console.log("COMMAND KIRIM : "+command_kirim);
+                pub_bc_acuan("BC_POWERSHELL_COMMAND",topic_bc,command_kirim,kdtk,ip);
+                await sleep(jeda_pengecekan_versi);
+            }
+            
+            console.log("-----------------------------------------------");
         }
 });
 
