@@ -141,6 +141,26 @@ const ProdmastLogger = createLogger({
     ]
 });
 
+const SPDMastLogger = createLogger({
+    levels: config.syslog.levels,
+    defaultMeta: {component: 'spdmast.log'},
+    format: combine(
+        timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        json()
+      ),
+   
+    transports: [
+        new transports.Console(),
+        new transports.File({ filename: 'spdmast.log' })
+    ],
+    exceptionHandlers: [
+        new transports.Console(),
+        new transports.File({ filename: 'err.log'})
+    ]
+});
+
  
 
 module.exports = {
@@ -150,6 +170,7 @@ module.exports = {
  ProdmastLogger:ProdmastLogger,
  programInstalledLogger: programInstalledLogger,
  memoryInfoLogger: memoryInfoLogger,
- BootTimeLogger: BootTimeLogger
+ BootTimeLogger: BootTimeLogger,
+ SPDMastLogger: SPDMastLogger
 
 };
