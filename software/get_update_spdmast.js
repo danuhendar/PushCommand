@@ -55,7 +55,7 @@ console.log("Berjalan pada Menit : "+SCHEDULE_CRON_MENIT);
             //var res_station = "01";
             //console.log("res-station : "+res_station)
             //-- loop station --//
-                    var sql_get_ip = "SELECT GROUP_CONCAT(TOKO) AS TOKO FROM tokomain WHERE KDCAB = '"+ip+"' AND STATION = '01' ORDER BY TOKO ASC;";
+                    var sql_get_ip = "SELECT GROUP_CONCAT(TOKO) AS TOKO FROM tokomain WHERE KDCAB = '"+ip+"' AND STATION = '01' AND TOKO NOT IN('T1KT','T4VV','T2WX') ORDER BY TOKO ASC;";
                     console.log(sql_get_ip);
                     mysqlLib.executeQuery(sql_get_ip).then((d) => {
                             //console.log(d[a])
